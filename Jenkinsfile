@@ -25,7 +25,7 @@ pipeline {
         stage('Pushing to S3 bucket') {
             steps {
                 sh '''
-                    withAWS(credentials:'${aws_cred}'){
+                    withAWS(credentials:'${aws_cred}', region:'${aws_region}'){
                         aws s3 cp lambda_handler.zip s3://$s3_bkt/$s3_key
                     }
                 '''
