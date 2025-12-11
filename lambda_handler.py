@@ -1,25 +1,21 @@
-import json
 import boto3
+import os
+
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('events')
+table = dynamodb.Table('lambda-dynamodb-stream')
+
 def lambda_handler(event, context):
-    Event_time=event.get('time')
-    Event_Source=event.get('source')
-    Event_Name=event.get('detail-type')
-    Resource_name=event.get('detail').get('instance-id')
-    aws_region=event.get('region')
-    username=event.get('account') 
-    try:
-        response = table.put_item(
-            Item={
-                'Event time': Event_time,
-                'Event_Source': Event_Source,
-                'Event_Name': Event_Name,
-                'Resource_name': Resource_name,
-                'aws_region': aws_region,
-                'username': username
-            }
-        )
-        print("PutItem succeeded:", json.dumps(response, indent=4))
-    except Exception as e:
-        print("Error putting item:", e)
+    detail = event["detail"]
+    instance_id = detail["instance-id"]
+    state = detail["state"]
+    launch_time = event["time"]
+
+    item = {
+        'instance_id': instance_id,
+        'instance_launch_time': launch_time,
+        'instance_current_state': state
+    }
+
+    table.put_item(Item=item)
+
+    return {"status": "ok"}
