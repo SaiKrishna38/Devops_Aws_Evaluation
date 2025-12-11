@@ -5,7 +5,7 @@ on:
       - main
 env:
       AWS_REGION: ap-south-1
-      ECR_REPOSITORY: lambda-ecr-repo
+      ECR_REPOSITORY: lambda_ecr_repo
       LAMBDA_FUNCTION_NAME: lambda_handler.py
 
 jobs:
